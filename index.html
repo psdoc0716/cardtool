@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>桌游设计师工具箱</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        dark: '#333333',
+                        light: '#FFFFFF'
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+            }
+            .card-hover {
+                transition: transform 0.2s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-3px);
+            }
+        }
+    </style>
+    <style>
+        /* 主题样式变量 */
+        :root {
+            --bg-color: #f9fafb;
+            --text-color: #111827;
+            --panel-bg: #f3f4f6;
+            --border-color: #d1d5db;
+            --hover-color: #e5e7eb;
+            --input-bg: #ffffff;
+        }
+        
+        /* 白色主题 */
+        .theme-white {
+            --bg-color: #f9fafb;
+            --text-color: #111827;
+            --panel-bg: #f3f4f6;
+            --border-color: #d1d5db;
+            --hover-color: #e5e7eb;
+            --input-bg: #ffffff;
+        }
+        
+        /* 深黑主题 */
+        .theme-black {
+            --bg-color: #000000;
+            --text-color: #F0F0F0;
+            --panel-bg: #121212;
+            --border-color: #222222;
+            --hover-color: #333333;
+            --input-bg: #121212;
+        }
+        
+        /* 深灰色主题 */
+        .theme-dark-gray {
+            --bg-color: #333333;
+            --text-color: #e0e0e0;
+            --panel-bg: #292929;
+            --border-color: #444444;
+            --hover-color: #555555;
+            --input-bg: #3a3a3a;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- 标题区域 -->
+    <div class="pt-20 pb-10 px-6">
+        <div class="container mx-auto text-center">
+            <div class="flex justify-end mb-4">
+                <button id="theme-white" class="p-2 rounded-full hover:bg-gray-700 transition-colors mr-2" title="白色主题">
+                    <i class="fa fa-sun-o"></i>
+                </button>
+                <button id="theme-black" class="p-2 rounded-full hover:bg-gray-700 transition-colors mr-2" title="纯黑主题">
+                    <i class="fa fa-moon-o"></i>
+                </button>
+                <button id="theme-dark-gray" class="p-2 rounded-full hover:bg-gray-700 transition-colors" title="深灰主题">
+                    <i class="fa fa-adjust"></i>
+                </button>
+            </div>
+            <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-6 bg-gradient-to-r from-[var(--text-color)] to-[var(--hover-color)] text-gradient">为桌游创作者打造的专业工具集</h2>
+            <p class="text-[var(--text-color)] max-w-2xl mx-auto text-xl sm:text-2xl md:text-3xl">简化桌游设计流程，释放你的创意潜能</p>
+        </div>
+    </div>
+    <!-- 核心工具区域 -->
+    <div class="py-12 px-6">
+        <div class="container mx-auto max-w-7xl">
+            <h3 class="text-[36px] font-extrabold mb-[36px] text-center text-[var(--text-color)] tracking-tight">核心工具</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-[32px] justify-center">
+
+                <!-- 工具1：卡牌拼版工具 -->
+                <a href="卡牌拼版工具.html" class="no-underline">
+                    <div class="bg-[var(--panel-bg)] rounded-2xl ring-2 ring-[var(--border-color)] p-8 h-full flex flex-col items-center justify-between card-hover">
+                        <div class="mb-6 flex flex-col items-center">
+                            <div class="icon-wrapper flex justify-center items-center bg-[var(--hover-color)] rounded-full w-12 h-12 mb-4">
+                                <i class="fa fa-th text-[var(--text-color)] text-lg"></i>
+                            </div>
+                            <div class="tool-info text-center">
+                                <h4 class="text-lg font-bold mb-2 text-[var(--text-color)] opacity-70">TTS卡牌拼版工具</h4>
+                                <p class="text-sm text-[var(--text-color)] opacity-70">适用于Tabletop Simulator，完美复刻，一键导出</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-center mt-auto">
+                            <span class="text-[var(--text-color)] text-sm font-medium opacity-70 hover:underline">开始使用 <i class="fa fa-arrow-right ml-1"></i></span>
+                        </div>
+                    </div>
+                </a>
+                <!-- 工具2：敬请期待 -->
+                <div class="bg-[var(--panel-bg)] rounded-2xl ring-2 ring-[var(--border-color)] p-8 h-full flex flex-col items-center justify-center opacity-70 card-hover">
+                    <div class="icon-wrapper flex justify-center items-center bg-[var(--hover-color)] rounded-full w-12 h-12 mb-4">
+                        <i class="fa fa-clock-o text-[var(--text-color)] text-lg"></i>
+                    </div>
+                    <span class="text-[var(--text-color)] text-lg font-medium opacity-70">敬请期待</span>
+                </div>
+                <!-- 工具3：敬请期待 -->
+                <div class="bg-[var(--panel-bg)] rounded-2xl ring-2 ring-[var(--border-color)] p-8 h-full flex flex-col items-center justify-center opacity-70 card-hover">
+                    <div class="icon-wrapper flex justify-center items-center bg-[var(--hover-color)] rounded-full w-12 h-12 mb-4">
+                        <i class="fa fa-clock-o text-[var(--text-color)] text-lg"></i>
+                    </div>
+                    <span class="text-[var(--text-color)] text-lg font-medium opacity-70">敬请期待</span>
+                </div>
+<style type="text/tailwindcss">
+    @layer utilities {
+        .card-hover {
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .card-hover:hover {
+            transform: translateY(-8px);
+        }
+    }
+</style>
+            </div>
+        </div>
+    </div>
+    <!-- 页脚 -->
+    <footer class="py-6 px-6 mt-12 border-t border-[var(--border-color)]">
+        <div class="container mx-auto text-center text-sm text-gray-500">
+            桌游设计师工具箱 &copy; 2025
+            <p class="mt-1"><a href="https://www.behance.net/psdoc" target="_blank" class="text-blue-500 hover:underline">behance.net/psdoc</a></p>
+        </div>
+    </footer>
+    <script>
+        // 主题切换功能
+        function setTheme(theme) {
+            // 移除所有主题类
+            document.body.classList.remove('theme-white', 'theme-black', 'theme-dark-gray');
+            // 添加当前主题类
+            document.body.classList.add(`theme-${theme}`);
+            // 保存主题到localStorage
+            localStorage.setItem('theme', theme);
+            // 更新元素样式
+            document.querySelectorAll('input, select').forEach(el => {
+                el.style.backgroundColor = 'var(--input-bg)';
+                el.style.borderColor = 'var(--border-color)';
+                el.style.color = 'var(--text-color)';
+            });
+        }
+
+        // 初始化主题
+        const savedTheme = localStorage.getItem('theme') || 'dark-gray';
+        setTheme(savedTheme);
+
+        // 主题按钮事件监听
+        document.getElementById('theme-white').addEventListener('click', () => setTheme('white'));
+        document.getElementById('theme-black').addEventListener('click', () => setTheme('black'));
+        document.getElementById('theme-dark-gray').addEventListener('click', () => setTheme('dark-gray'));
+    </script>
+</body>
+</html>
