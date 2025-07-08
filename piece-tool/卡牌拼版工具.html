@@ -106,6 +106,19 @@
             font-size: 0.9em;
         }
 
+        /* 深色主题下的返回按钮调整 */
+        .theme-black .back-btn,
+        .theme-dark-gray .back-btn {
+            color: white;
+            filter: brightness(1.1);
+        }
+
+        .theme-black .back-btn:hover,
+        .theme-dark-gray .back-btn:hover {
+            color: white;
+            filter: brightness(1.3);
+        }
+
         .back-btn:hover {
             background: var(--hover-color);
             transform: translateX(-5px);
@@ -131,6 +144,19 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        /* 深色主题下的主题按钮调整 */
+        .theme-black .theme-btn,
+        .theme-dark-gray .theme-btn {
+            color: white;
+            filter: brightness(1.1);
+        }
+
+        .theme-black .theme-btn:hover,
+        .theme-dark-gray .theme-btn:hover {
+            color: white;
+            filter: brightness(1.3);
         }
 
         .theme-btn:hover {
@@ -161,6 +187,12 @@
         .control-panel:hover {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             transform: translateY(-2px);
+        }
+
+        /* 深色主题下的控制面板悬浮调整 */
+        .theme-black .control-panel:hover,
+        .theme-dark-gray .control-panel:hover {
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
         }
 
         .control-panel h2 {
@@ -209,11 +241,41 @@
             background: var(--hover-color);
         }
 
+        /* 深色主题下的上传区域悬浮调整 */
+        .theme-black .upload-area:hover,
+        .theme-dark-gray .upload-area:hover {
+            border-color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--gradient-start);
+            background: var(--hover-color);
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 深色主题下的拖拽状态调整 */
+        .theme-black .upload-area.dragover,
+        .theme-dark-gray .upload-area.dragover {
+            border-color: white;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+        }
+
         .upload-area i {
             font-size: 2.5em;
             color: var(--gradient-start);
             margin-bottom: 12px;
             display: block;
+            filter: brightness(1.2) contrast(1.1);
+        }
+
+        /* 深色主题下的图标颜色调整 */
+        .theme-black .upload-area i,
+        .theme-dark-gray .upload-area i {
+            color: white;
+            filter: brightness(1.3) contrast(1.2);
         }
 
         .upload-area p {
@@ -248,6 +310,15 @@
             outline: none;
             border-color: var(--gradient-start);
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* 深色主题下的输入框焦点调整 */
+        .theme-black .form-input:focus,
+        .theme-black .form-select:focus,
+        .theme-dark-gray .form-input:focus,
+        .theme-dark-gray .form-select:focus {
+            border-color: white;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
         }
 
         .btn {
@@ -290,6 +361,27 @@
             color: white;
         }
 
+        /* 深色主题下的按钮调整 */
+        .theme-black .btn-primary,
+        .theme-dark-gray .btn-primary {
+            background: white;
+            color: black;
+            filter: brightness(1.1) contrast(1.1);
+        }
+
+        .theme-black .btn-primary:hover,
+        .theme-dark-gray .btn-primary:hover {
+            background: #F3F4F6;
+            filter: brightness(1.2) contrast(1.2);
+        }
+
+        /* 深色主题下的按钮图标调整 */
+        .theme-black .btn-primary i,
+        .theme-dark-gray .btn-primary i {
+            color: black;
+            filter: brightness(1.1);
+        }
+
         .btn-primary:hover {
             background: var(--gradient-end);
             transform: translateY(-1px);
@@ -315,6 +407,12 @@
 
         .preview-container:hover {
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 深色主题下的预览容器悬浮调整 */
+        .theme-black .preview-container:hover,
+        .theme-dark-gray .preview-container:hover {
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
         }
 
         .preview-container h2 {
@@ -367,6 +465,14 @@
             font-size: 3em;
             margin-bottom: 16px;
             opacity: 0.5;
+            color: var(--text-color);
+        }
+
+        /* 深色主题下的空状态图标调整 */
+        .theme-black .empty-state i,
+        .theme-dark-gray .empty-state i {
+            opacity: 0.7;
+            color: white;
         }
 
         .file-count {
@@ -396,6 +502,18 @@
         .footer a {
             color: var(--gradient-start);
             text-decoration: none;
+        }
+
+        /* 深色主题下的链接图标调整 */
+        .theme-black .footer a,
+        .theme-dark-gray .footer a {
+            color: white;
+        }
+
+        .theme-black .footer a i,
+        .theme-dark-gray .footer a i {
+            color: white;
+            filter: brightness(1.2);
         }
 
         .footer a:hover {
@@ -437,6 +555,13 @@
                 margin-bottom: 8px;
             }
 
+            /* 移动端深色主题图标调整 */
+            .theme-black .upload-area i,
+            .theme-dark-gray .upload-area i {
+                color: white;
+                filter: brightness(1.3) contrast(1.2);
+            }
+
             .control-panel {
                 padding: 16px;
                 margin-bottom: 16px;
@@ -474,6 +599,13 @@
                 margin-bottom: 6px;
             }
 
+            /* 小屏深色主题图标调整 */
+            .theme-black .upload-area i,
+            .theme-dark-gray .upload-area i {
+                color: white;
+                filter: brightness(1.3) contrast(1.2);
+            }
+
             .preview-container {
                 padding: 12px;
                 min-height: 250px;
@@ -509,6 +641,13 @@
             .upload-area i {
                 font-size: 3em;
                 margin-bottom: 16px;
+            }
+
+            /* 大屏深色主题图标调整 */
+            .theme-black .upload-area i,
+            .theme-dark-gray .upload-area i {
+                color: white;
+                filter: brightness(1.3) contrast(1.2);
             }
 
             .preview-container {
@@ -555,9 +694,9 @@
                 <div class="lg:col-span-1">
                     <div class="control-panel">
                         <h2>导入图片</h2>
-                        <label class="upload-area" for="file-input">
+                        <label class="upload-area" for="file-input" id="uploadArea">
                             <i class="fa fa-cloud-upload"></i>
-                            <p style="font-weight: 500; margin-bottom: 8px;">点击上传</p>
+                            <p style="font-weight: 500; margin-bottom: 8px;">点击或拖拽上传</p>
                             <p style="font-size: 0.85em; opacity: 0.7;">支持JPG, PNG格式 (最多70张)</p>
                         </label>
                         <input id="file-input" type="file" accept="image/*" multiple class="hidden" />
@@ -644,6 +783,30 @@
 
     <script src="script.js"></script>
     <script>
+        // 获取DOM元素
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('file-input');
+
+        // 拖拽上传功能 - 只处理视觉反馈，不处理文件逻辑
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            // 只有当鼠标真正离开上传区域时才移除dragover状态
+            if (!uploadArea.contains(e.relatedTarget)) {
+                uploadArea.classList.remove('dragover');
+            }
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            // 文件处理逻辑由script.js中的handleDrop函数处理
+        });
+
         // 主题切换功能
         function setTheme(theme) {
             document.body.classList.remove('theme-white', 'theme-black', 'theme-dark-gray');

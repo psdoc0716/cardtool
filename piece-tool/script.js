@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const emptyState = document.getElementById('empty-state');
     const widthValue = document.getElementById('width-value');
     const heightValue = document.getElementById('height-value');
-    const dropArea = document.querySelector('label[for="file-input"]');
+    const dropArea = document.getElementById('uploadArea');
     // 添加图片网格容器
     const previewGrid = document.getElementById('preview-grid');
     // 添加JPG质量控制元素
@@ -103,11 +103,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     function highlight() {
-        dropArea.classList.add('drag-highlight');
+        dropArea.classList.add('dragover');
     }
     
     function unhighlight() {
-        dropArea.classList.remove('drag-highlight');
+        dropArea.classList.remove('dragover');
     }
     
     dropArea.addEventListener('drop', handleDrop, false);
