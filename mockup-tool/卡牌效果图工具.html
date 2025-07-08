@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卡牌效果图生成工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        dark: '#333333',
+                        light: '#FFFFFF'
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+            }
+        }
+    </style>
+    <style>
+        /* 主题样式变量 */
+        :root {
+            --bg-color: #f9fafb;
+            --text-color: #111827;
+            --panel-bg: #f3f4f6;
+            --border-color: #d1d5db;
+            --hover-color: #e5e7eb;
+            --input-bg: #ffffff;
+            --gradient-start: #3B82F6;
+            --gradient-end: #1D4ED8;
+        }
+        
+        /* 白色主题 */
+        .theme-white {
+            --bg-color: #f9fafb;
+            --text-color: #111827;
+            --panel-bg: #f3f4f6;
+            --border-color: #d1d5db;
+            --hover-color: #e5e7eb;
+            --input-bg: #ffffff;
+            --gradient-start: #3B82F6;
+            --gradient-end: #1D4ED8;
+        }
+        
+        /* 深黑主题 */
+        .theme-black {
+            --bg-color: #000000;
+            --text-color: #F0F0F0;
+            --panel-bg: #121212;
+            --border-color: #222222;
+            --hover-color: #333333;
+            --input-bg: #121212;
+            --gradient-start: #1a1a2e;
+            --gradient-end: #16213e;
+        }
+        
+        /* 深灰色主题 */
+        .theme-dark-gray {
+            --bg-color: #333333;
+            --text-color: #e0e0e0;
+            --panel-bg: #292929;
+            --border-color: #444444;
+            --hover-color: #555555;
+            --input-bg: #3a3a3a;
+            --gradient-start: #2c3e50;
+            --gradient-end: #34495e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container, .main-content {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: transparent;
+            color: var(--text-color);
+            padding: 10px 0 0 0;
+            text-align: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 20;
+        }
+        .header h1 {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin: 15px 0 0 0;
+            letter-spacing: 0.01em;
+        }
+        .header p {
+            font-size: 0.95em;
+            opacity: 0.8;
+            margin-bottom: 0;
+        }
+
+        .theme-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .theme-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: var(--panel-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-btn:hover {
+            background: var(--hover-color);
+            transform: scale(1.1);
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--panel-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+        }
+
+        .back-btn:hover {
+            background: var(--hover-color);
+            transform: translateX(-5px);
+        }
+
+        .instruction {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--text-color);
+            text-align: center;
+            font-size: 1.2em;
+            pointer-events: auto;
+            z-index: 5;
+            background: var(--panel-bg);
+            padding: 30px 40px 30px 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            min-width: 220px;
+        }
+        .instruction .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 1.3em;
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .instruction .close-btn:hover {
+            background: var(--hover-color);
+        }
+
+        .instruction.hidden {
+            display: none;
+        }
+
+        .main-content {
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+        }
+
+        .upload-section {
+            position: fixed;
+            left: 50%;
+            bottom: 40px;
+            transform: translateX(-50%);
+            width: auto;
+            min-width: 180px;
+            max-width: 90vw;
+            height: 56px;
+            padding: 0 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--panel-bg);
+            border-radius: 28px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 16px 0 rgba(0,0,0,0.04);
+            z-index: 10;
+            transition: box-shadow 0.2s;
+        }
+        .upload-section:hover, .upload-section.dragover {
+            box-shadow: 0 4px 32px 0 rgba(0,0,0,0.10);
+            border-color: var(--gradient-start);
+            background: var(--hover-color);
+        }
+        .upload-area {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .upload-icon {
+            font-size: 1.5em;
+            margin-right: 16px;
+            color: var(--gradient-start);
+        }
+        .upload-text {
+            font-size: 1em;
+            color: var(--text-color);
+            margin-bottom: 0;
+        }
+        .upload-hint {
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .upload-section {
+                min-width: 0;
+                max-width: 98vw;
+                height: 48px;
+                padding: 0 10px;
+            }
+            .upload-icon {
+                font-size: 1.2em;
+                margin-right: 8px;
+            }
+            .upload-text {
+                font-size: 0.95em;
+            }
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .preview-section {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: var(--bg-color);
+            box-sizing: border-box;
+        }
+
+        .card-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* 不要设置float/absolute/left/right */
+        }
+
+        .card {
+            position: relative;
+            width: 200px;
+            height: 280px;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.1s ease;
+            transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+            cursor: grab;
+            user-select: none;
+        }
+
+        .card:active {
+            cursor: grabbing;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.4) 0%,
+                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0.4) 100%
+            );
+            border-radius: 8px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.3) 50%,
+                transparent 70%
+            );
+            border-radius: 8px;
+            z-index: 3;
+            pointer-events: none;
+            animation: plastic-shine 3s ease-in-out infinite;
+        }
+
+        @keyframes plastic-shine {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            z-index: 1;
+            position: relative;
+        }
+
+        .card-shadow {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 20px;
+            background: radial-gradient(ellipse, rgba(0, 0, 0, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(5px);
+        }
+
+
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: var(--text-color);
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--text-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header p {
+                font-size: 1em;
+            }
+            
+            .back-btn {
+                position: relative;
+                top: auto;
+                left: auto;
+                margin-bottom: 15px;
+                display: inline-flex;
+            }
+            
+            .theme-buttons {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-bottom: 15px;
+                justify-content: center;
+            }
+            
+            .instruction {
+                font-size: 1em;
+                padding: 20px;
+                background: transparent;
+            }
+        }
+        .toggle-ui-btn {
+            position: fixed;
+            right: 32px;
+            bottom: 40px;
+            z-index: 100;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: none;
+            background: var(--panel-bg);
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4em;
+            cursor: pointer;
+            box-shadow: 0 2px 8px 0 rgba(0,0,0,0.08);
+            transition: background 0.2s, color 0.2s;
+        }
+        .toggle-ui-btn:hover {
+            background: var(--hover-color);
+        }
+        @media (max-width: 768px) {
+            .toggle-ui-btn {
+                width: 38px;
+                height: 38px;
+                font-size: 1em;
+                right: 12px;
+                bottom: 16px;
+            }
+        }
+
+        /* 隐藏UI的类 */
+        .hide-ui .header,
+        .hide-ui .upload-section,
+        .hide-ui .instruction,
+        .hide-ui .zoom-btn {
+            display: none !important;
+        }
+        /* 保证toggle-ui-btn始终可见 */
+        .hide-ui .toggle-ui-btn {
+            display: flex !important;
+        }
+
+        /* 保证卡牌预览区始终显示 */
+        .zoom-btn, .toggle-ui-btn {
+            position: fixed;
+            right: 32px;
+            z-index: 100;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border-color);
+            background: var(--panel-bg);
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25em;
+            cursor: pointer;
+            box-shadow: none;
+            transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+        }
+        .zoom-out { bottom: 152px; }
+        .zoom-in  { bottom: 100px; }
+        .toggle-ui-btn { bottom: 48px; }
+
+        @media (max-width: 768px) {
+            .zoom-btn, .toggle-ui-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 1em;
+                right: 12px;
+            }
+            .zoom-out { bottom: 110px; }
+            .zoom-in  { bottom: 70px; }
+            .toggle-ui-btn { bottom: 28px; }
+        }
+        .zoom-btn:hover, .toggle-ui-btn:hover {
+          background: var(--hover-color);
+          border-color: var(--gradient-start);
+          transform: scale(1.1);
+        }
+
+        .settings-btn {
+            position: fixed;
+            left: 32px;
+            bottom: 48px;
+            top: auto;
+            transform: none;
+            z-index: 100;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border-color);
+            background: var(--panel-bg);
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25em;
+            cursor: pointer;
+            box-shadow: none;
+            transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+        }
+        .settings-btn:hover {
+            background: var(--hover-color);
+            border-color: var(--gradient-start);
+            transform: scale(1.1);
+        }
+        .effect-panel {
+            position: fixed;
+            left: 32px;
+            bottom: 104px;
+            top: auto;
+            transform: none;
+            z-index: 101;
+            background: var(--panel-bg);
+            border: 1.5px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 2px 16px 0 rgba(0,0,0,0.08);
+            padding: 18px 20px 14px 20px;
+            min-width: 140px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: stretch;
+        }
+        .effect-title {
+            font-size: 1em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            text-align: center;
+        }
+        .effect-option {
+            border: 1px solid var(--border-color);
+            background: var(--hover-color);
+            color: var(--text-color);
+            border-radius: 8px;
+            padding: 6px 0;
+            font-size: 0.98em;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .effect-option:hover, .effect-option.active {
+            background: var(--gradient-start);
+            color: #fff;
+            border-color: var(--gradient-start);
+        }
+        @media (max-width: 768px) {
+            .settings-btn {
+                left: 10px;
+                bottom: 28px;
+                width: 36px;
+                height: 36px;
+                font-size: 1em;
+            }
+            .effect-panel {
+                left: 10px;
+                bottom: 74px;
+                min-width: 100px;
+                padding: 10px 8px 8px 8px;
+            }
+        }
+
+        /* 卡牌视觉效果 */
+        .effect-plastic::before,
+        .effect-plastic::after {
+            background: linear-gradient(135deg,rgba(255,255,255,0.35) 0%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.35) 100%);
+            opacity: 1;
+        }
+        .effect-gold::before {
+            background: linear-gradient(135deg, #fffbe6 0%, #ffe066 30%, #ffe9a0 60%, #c8b97e 100%);
+            opacity: 0.55;
+        }
+        .effect-gold::after {
+            background: linear-gradient(60deg,rgba(255,255,255,0.18) 0%,rgba(255,255,255,0.06) 100%);
+            opacity: 0.4;
+        }
+        .effect-rainbow::before {
+            background: linear-gradient(120deg,
+                rgba(255,0,80,0.22) 0%,
+                rgba(255,128,0,0.22) 16%,
+                rgba(255,255,0,0.22) 32%,
+                rgba(0,255,128,0.22) 48%,
+                rgba(0,128,255,0.22) 64%,
+                rgba(128,0,255,0.22) 80%,
+                rgba(255,0,255,0.22) 100%
+            );
+            opacity: 1;
+        }
+        .effect-rainbow::after {
+            background: linear-gradient(60deg,rgba(255,255,255,0.22) 0%,rgba(0,0,0,0.08) 100%);
+            opacity: 0.7;
+        }
+        .effect-shadow {
+            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.45), 0 1.5px 8px 0 rgba(0,0,0,0.18);
+        }
+        .effect-glass::before {
+            background: linear-gradient(135deg,rgba(255,255,255,0.25) 0%,rgba(255,255,255,0.08) 100%);
+            opacity: 1;
+            filter: blur(1.5px);
+        }
+        .effect-glass::after {
+            background: linear-gradient(60deg,rgba(255,255,255,0.12) 0%,rgba(0,0,0,0.04) 100%);
+            opacity: 0.7;
+            filter: blur(1.5px);
+        }
+        /* 霓虹边框效果 */
+        .effect-neon {
+          box-shadow: 0 0 0 4px rgba(0,255,255,0.25), 0 0 16px 4px #00fff7, 0 0 32px 8px #ff00de;
+          border: 2.5px solid #00fff7;
+          animation: neon-glow 2s linear infinite alternate;
+        }
+        @keyframes neon-glow {
+          0% { box-shadow: 0 0 0 4px rgba(0,255,255,0.25), 0 0 16px 4px #00fff7, 0 0 32px 8px #ff00de; }
+          100% { box-shadow: 0 0 0 6px rgba(255,0,255,0.18), 0 0 24px 8px #ff00de, 0 0 48px 16px #00fff7; }
+        }
+
+        /* 火焰能量效果 */
+        .effect-flame {
+          border: 2.5px solid #ff9800;
+          box-shadow:
+            0 0 6px 1px #ff9800,
+            0 0 14px 3px #ff3c00,
+            0 0 20px 6px #fffbe6,
+            0 0 0 0 #fff;
+          animation: flame-real 1.1s infinite alternate cubic-bezier(.4,0,.2,1);
+        }
+        @keyframes flame-real {
+          0% {
+            box-shadow:
+              0 0 6px 1px #ff9800,
+              0 0 14px 3px #ff3c00,
+              0 0 20px 6px #fffbe6,
+              0 0 0 0 #fff;
+            border-color: #ff9800;
+          }
+          30% {
+            box-shadow:
+              0 0 10px 2px #ffd700,
+              0 0 18px 5px #ff9800,
+              0 0 28px 10px #ff3c00,
+              0 0 4px 1px #fffbe6;
+            border-color: #ffd700;
+          }
+          60% {
+            box-shadow:
+              0 0 5px 1px #ff3c00,
+              0 0 16px 4px #ffd700,
+              0 0 18px 7px #ff9800,
+              0 0 8px 2px #fffbe6;
+            border-color: #ff3c00;
+          }
+          100% {
+            box-shadow:
+              0 0 12px 3px #ffd700,
+              0 0 22px 8px #ff9800,
+              0 0 28px 12px #ff3c00,
+              0 0 12px 4px #fffbe6;
+            border-color: #ffd700;
+          }
+        }
+
+        /* 玻璃磨砂效果 */
+        .effect-frosted::before {
+          background: rgba(255,255,255,0.18);
+          opacity: 1;
+          filter: blur(4px);
+        }
+        .effect-frosted::after {
+          background: linear-gradient(120deg,rgba(255,255,255,0.10) 0%,rgba(0,0,0,0.04) 100%);
+          opacity: 0.5;
+          filter: blur(2px);
+        }
+
+        /* 烟雾效果 */
+        .effect-smoke {
+          box-shadow:
+            0 0 18px 4px rgba(200,200,200,0.18),
+            0 0 36px 12px rgba(180,180,180,0.13),
+            0 0 64px 24px rgba(220,220,220,0.10),
+            0 0 0 0 #fff;
+          border: 2px solid rgba(180,180,180,0.18);
+          animation: smoke-float 2.5s infinite alternate ease-in-out;
+        }
+        @keyframes smoke-float {
+          0% {
+            box-shadow:
+              0 0 18px 4px rgba(200,200,200,0.18),
+              0 0 36px 12px rgba(180,180,180,0.13),
+              0 0 64px 24px rgba(220,220,220,0.10),
+              0 0 0 0 #fff;
+            border-color: rgba(180,180,180,0.18);
+          }
+          50% {
+            box-shadow:
+              0 0 28px 8px rgba(220,220,220,0.22),
+              0 0 48px 18px rgba(180,180,180,0.16),
+              0 0 80px 32px rgba(200,200,200,0.13),
+              0 0 8px 2px #fff;
+            border-color: rgba(200,200,200,0.22);
+          }
+          100% {
+            box-shadow:
+              0 0 18px 4px rgba(200,200,200,0.18),
+              0 0 36px 12px rgba(180,180,180,0.13),
+              0 0 64px 24px rgba(220,220,220,0.10),
+              0 0 0 0 #fff;
+            border-color: rgba(180,180,180,0.18);
+          }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="../index.html" class="back-btn">
+                <i class="fa fa-arrow-left"></i>
+                返回主页
+            </a>
+            <div class="theme-buttons">
+                <button class="theme-btn" id="theme-white" title="白色主题">
+                    <i class="fa fa-sun-o"></i>
+                </button>
+                <button class="theme-btn" id="theme-black" title="纯黑主题">
+                    <i class="fa fa-moon-o"></i>
+                </button>
+                <button class="theme-btn" id="theme-dark-gray" title="深灰主题">
+                    <i class="fa fa-adjust"></i>
+                </button>
+            </div>
+            <h1>卡牌效果图生成工具</h1>
+        </div>
+
+        <div class="main-content">
+            <div class="preview-section">
+                <div class="instruction" id="instruction">
+                    <div style="font-size: 3em; margin-bottom: 20px;">🎴</div>
+                    <div>拖拽卡牌来调整3D角度</div>
+                    <div style="font-size: 0.8em; margin-top: 10px;">支持鼠标和触摸操作</div>
+                    <button class="close-btn" onclick="instruction.classList.add('hidden')">&times;</button>
+                </div>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <div>正在生成效果图...</div>
+                </div>
+                
+                <div class="card-container" id="cardContainer">
+                    <div class="card" id="card">
+                        <img class="card-image" id="cardImage" src="示例图片.png" alt="卡牌预览">
+                        <div class="card-shadow" id="cardShadow"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="upload-section" id="uploadSection">
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">点击或拖拽至此处上传卡牌图片</div>
+                    <div class="upload-hint">支持 JPG、PNG、GIF 格式</div>
+                </div>
+                <input type="file" id="fileInput" accept="image/*">
+            </div>
+
+            <button class="zoom-btn zoom-in" id="zoomInBtn" title="放大卡牌" type="button">＋</button>
+            <button class="zoom-btn zoom-out" id="zoomOutBtn" title="缩小卡牌" type="button">－</button>
+            <button class="toggle-ui-btn" id="toggleUIBtn" title="隐藏/显示其他UI" type="button">
+                <i class="fa fa-eye"></i>
+            </button>
+            <button class="settings-btn" id="settingsBtn" title="切换卡牌视觉效果" type="button">
+                <i class="fa fa-cog"></i>
+            </button>
+            <div class="effect-panel" id="effectPanel" style="display:none;">
+                <div class="effect-title">卡牌视觉效果</div>
+                <button class="effect-option" data-effect="plastic">塑料高光</button>
+                <button class="effect-option" data-effect="gold">金卡效果</button>
+                <button class="effect-option" data-effect="rainbow">彩虹渐变</button>
+                <button class="effect-option" data-effect="neon">霓虹边框</button>
+                <button class="effect-option" data-effect="flame">火焰能量</button>
+                <button class="effect-option" data-effect="frosted">玻璃磨砂</button>
+                <button class="effect-option" data-effect="smoke">烟雾效果</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const uploadSection = document.getElementById('uploadSection');
+        const fileInput = document.getElementById('fileInput');
+        const cardContainer = document.getElementById('cardContainer');
+        const card = document.getElementById('card');
+        const cardImage = document.getElementById('cardImage');
+        const cardShadow = document.getElementById('cardShadow');
+        const loading = document.getElementById('loading');
+        const instruction = document.getElementById('instruction');
+        const toggleUIBtn = document.getElementById('toggleUIBtn');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const effectPanel = document.getElementById('effectPanel');
+        const effectOptions = document.querySelectorAll('.effect-option');
+
+        // 拖拽状态变量
+        let isDragging = false;
+        let startX, startY;
+        let currentRotationX = 0;
+        let currentRotationY = 0;
+
+        // 缩放功能
+        let cardScale = 1.0;
+        const minScale = 0.5;
+        const maxScale = 2.0;
+        const scaleStep = 0.1;
+        const zoomInBtn = document.getElementById('zoomInBtn');
+        const zoomOutBtn = document.getElementById('zoomOutBtn');
+
+        function updateCardScale() {
+            card.style.transform = `perspective(1000px) rotateX(${currentRotationX}deg) rotateY(${currentRotationY}deg) scale(${cardScale})`;
+        }
+
+        zoomInBtn.onclick = function() {
+            cardScale = Math.min(maxScale, cardScale + scaleStep);
+            applyEffects();
+        };
+        zoomOutBtn.onclick = function() {
+            cardScale = Math.max(minScale, cardScale - scaleStep);
+            applyEffects();
+        };
+
+        // 鼠标滚轮缩放
+        card.addEventListener('wheel', function(e) {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                cardScale = Math.min(maxScale, cardScale + scaleStep);
+            } else {
+                cardScale = Math.max(minScale, cardScale - scaleStep);
+            }
+            applyEffects();
+        }, { passive: false });
+
+        // 保证拖拽旋转时也能保持缩放
+        function applyEffects() {
+            card.style.transform = `perspective(1000px) rotateX(${currentRotationX}deg) rotateY(${currentRotationY}deg) scale(${cardScale})`;
+            cardShadow.style.opacity = 0.3;
+            cardShadow.style.filter = `blur(8px)`;
+        }
+
+        // 拖拽上传功能
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.classList.add('dragover');
+        });
+
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.classList.remove('dragover');
+        });
+
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadSection.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        // 文件选择处理
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        // 处理上传的文件
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('请选择图片文件！');
+                return;
+            }
+
+            loading.classList.add('show');
+            cardContainer.style.display = 'none';
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                cardImage.src = e.target.result;
+                cardImage.onload = () => {
+                    loading.classList.remove('show');
+                    cardContainer.style.display = 'block';
+                    instruction.classList.add('hidden');
+                    applyEffects();
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 鼠标拖拽交互
+        card.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            card.style.cursor = 'grabbing';
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+            
+            // 计算旋转角度，限制在合理范围内
+            currentRotationY = Math.max(-30, Math.min(30, deltaX / 3));
+            currentRotationX = Math.max(-30, Math.min(30, -deltaY / 3));
+            
+            applyEffects();
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            card.style.cursor = 'grab';
+        });
+
+        // 触摸设备支持
+        card.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+            e.preventDefault();
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            
+            const deltaX = e.touches[0].clientX - startX;
+            const deltaY = e.touches[0].clientY - startY;
+            
+            currentRotationY = Math.max(-30, Math.min(30, deltaX / 3));
+            currentRotationX = Math.max(-30, Math.min(30, -deltaY / 3));
+            
+            applyEffects();
+            e.preventDefault();
+        });
+
+        document.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+
+        // 主题切换功能
+        function setTheme(theme) {
+            // 移除所有主题类
+            document.body.classList.remove('theme-white', 'theme-black', 'theme-dark-gray');
+            // 添加当前主题类
+            document.body.classList.add(`theme-${theme}`);
+            // 保存主题到localStorage
+            localStorage.setItem('theme', theme);
+        }
+
+        // 初始化主题
+        const savedTheme = localStorage.getItem('theme') || 'dark-gray';
+        setTheme(savedTheme);
+
+        // 主题按钮事件监听
+        document.getElementById('theme-white').addEventListener('click', () => setTheme('white'));
+        document.getElementById('theme-black').addEventListener('click', () => setTheme('black'));
+        document.getElementById('theme-dark-gray').addEventListener('click', () => setTheme('dark-gray'));
+
+        // 初始化
+        applyEffects();
+
+        // 切换UI按钮事件监听
+        document.getElementById('toggleUIBtn').onclick = function() {
+            document.body.classList.toggle('hide-ui');
+        };
+
+        // 设置按钮事件监听
+        settingsBtn.onclick = function() {
+            effectPanel.style.display = effectPanel.style.display === 'none' ? 'flex' : 'none';
+        };
+        document.addEventListener('click', function(e) {
+            if (!effectPanel.contains(e.target) && e.target !== settingsBtn && !settingsBtn.contains(e.target)) {
+                effectPanel.style.display = 'none';
+            }
+        });
+        effectOptions.forEach(btn => {
+            btn.onclick = function() {
+                effectOptions.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                card.classList.remove('effect-plastic', 'effect-gold', 'effect-rainbow', 'effect-neon', 'effect-flame', 'effect-frosted', 'effect-smoke');
+                card.classList.add('effect-' + btn.dataset.effect);
+                currentEffect = btn.dataset.effect;
+                effectPanel.style.display = 'none';
+            };
+        });
+        // 默认选中第一个
+        if (effectOptions[0]) effectOptions[0].classList.add('active');
+        card.classList.add('effect-plastic');
+    </script>
+</body>
+</html>
