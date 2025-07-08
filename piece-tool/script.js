@@ -437,14 +437,17 @@ document.addEventListener('DOMContentLoaded', () => {
             heightValue.textContent = '0';
             return;
         }
-        
         const cardsPerRow = parseInt(cardsPerRowInput.value) || 5;
         const scale = parseInt(exportScaleInput.value) / 100;
         let totalCount = 0;
         uploadedImages.forEach(item => {
             totalCount += item.count;
         });
-        // 这里原代码未完成，需要补充完整计算逻辑
+        const rows = Math.ceil(totalCount / cardsPerRow);
+        const width = Math.round(cardWidth * cardsPerRow * scale);
+        const height = Math.round(cardHeight * rows * scale);
+        widthValue.textContent = width;
+        heightValue.textContent = height;
     }
 
     // 原代码中缺少的函数定义
@@ -474,6 +477,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function exportImage() {
-        // 这里需要补充导出图片的具体逻辑
+        if (cardWidth === 0 || cardHeight === 0 || uploadedImages.length === 0) {
+            alert('没有可导出的图片');
+            return;
+        }
+        const cardsPerRow = parseInt(cardsPerRowInput.value) || 5;
+        const scale = parseInt(exportScaleInput.value) / 100;
+        let totalCount = 0;
+        uploadedImages.forEach(item => {
+            totalCount += item.count;
+        });
+        const rows = Math.ceil(totalCount / cardsPerRow);
+        const width = Math.round(cardWidth * cardsPerRow * scale);
+        const height = Math.round(cardHeight * rows * scale);
+        previewCanvas.width = width;
+        previewCanvas.height = height;
+        ctx.clearRect(0, 0, width, height);
+
+        // 按顺序绘制所有图片
+        let imgIndex = 0;
+        for (let i = 0; i < uploadedImages.length; i++) {
+            const item = uploadedImages[i];
+            for (let c = 0; c < item.count; c++) {
+                const row = Math.floor(imgIndex / cardsPerRow);
+                const col = imgIndex % cardsPerRow;
+                ctx.drawImage(
+                    item.img,
+                    col * cardWidth * scale,
+                    row * cardHeight * scale,
+                    cardWidth * scale,
+                    cardHeight * scale
+                );
+                imgIndex++;
+            }
+        }
+
+        // 导出图片
+        const format = exportFormatSelect.value;
+        let dataURL;
+        if (format === 'jpg') {
+            let quality = 0.9;
+            if (jpgQualityInput && !jpgQualityContainer.classList.contains('hidden')) {
+                const q = parseInt(jpgQualityInput.value);
+                if (!isNaN(q) && q >= 10 && q <= 100) {
+                    quality = q / 100;
+                }
+            }
+            dataURL = previewCanvas.toDataURL('image/jpeg', quality);
+        } else {
+            dataURL = previewCanvas.toDataURL('image/png');
+        }
+
+        // 触发下载
+        const link = document.createElement('a');
+        link.href = dataURL;
+        link.download = `card-export.${format}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 });

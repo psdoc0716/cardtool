@@ -199,3 +199,9 @@ body {
     justify-content: center;
     margin-top: 2px;
 }
+
+/* 统一卡牌预览图片圆角 */
+.preview-item img,
+.card-image {
+    border-radius: 12px !important;
+}
