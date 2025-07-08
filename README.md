@@ -36,4 +36,4 @@
 - **Canvas导出**：使用HTML5 Canvas技术生成高质量效果图
 
 ## 立即体验
-桌游设计师和爱好者可访问链接：[https://psdoc0716.github.io/](https://psdoc0716.github.io/)，简化设计流程，释放创意潜能！
+桌游设计师和爱好者可访问链接：[https://psdoc0716.github.io/cardtool/index.html](https://psdoc0716.github.io/cardtool/index.html)，简化设计流程，释放创意潜能！
